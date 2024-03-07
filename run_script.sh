@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # For the moment k=2 is not supported since PBH would form in matter dominated universe
-kList=("6")  # list of powers of inflaton potential to scan over
+kList=("4")  # list of powers of inflaton potential to scan over
 
 
 for kvar in "${kList[@]}"; do
@@ -41,18 +41,16 @@ for kvar in "${kList[@]}"; do
 		rm tempyuk.dat
 		yphi="${yuklist[$ip]}"
 		echo "ip, yphi, yuk = ", $ip, $yphi, $yuk
-		idm=$((0))
 		for logMBHin in "${logMBHinlist[@]}"; do
-			MBHin="mDM1E"$logMBHin
+			MBHin="MBH1E"$logMBHin
 			touch tempyuk.dat
 			echo $yphi	$kn	$logMBHin > tempyuk.dat
 			for beta in "${betalist[@]}"; do
 				echo "beta = " $beta
-				mkdir -p $path/phiff/$yuk/$MBHin/databeta=$beta/sigma_2
+				mkdir -p $path/phiff/$yuk/$MBHin/databeta=$beta/sigma_$sigmaM/
 				python3 -W ignore script_scan.py $tag $beta $logMBHin $sigmaM $alpha $Mdist $yphi 
 				mv $path/data_scan*  $path/phiff/$yuk/$MBHin/databeta=$beta/sigma_$sigmaM/
 			done
-			idm=$((0))
 		done
 		ip=$((ip+1))
 	done
