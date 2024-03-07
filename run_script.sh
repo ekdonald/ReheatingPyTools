@@ -22,7 +22,7 @@ for kvar in "${kList[@]}"; do
 	yuklist=("1E00")        # yukawa coupling of  Φ --> f f  (y_eff Φff)
 	yukdir=("yukawa=1E00")  # directory for storing data for each yukawa coupling
 
-	logMBHinlist=("2" "6")  # log10 of initial black hole masses to consider
+	logMBHinlist=("2" "6")  # log10 of initial black hole masses to consider  (in gramms, g)
 	Mdist="ext"             # mass distribution ("ext": enxtended power-law, "mono": monochromatic)
 	sigmaM="2"              # sigma = 0 for monochromatic BH "mono"
 	betalist=("-10" "-14")  # Initial fractions of black hole energy density to scan over
