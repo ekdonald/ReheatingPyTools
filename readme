@@ -20,7 +20,7 @@ Author: D. Kpatcha
 
 
 This package provides the solution of the Friedmann - Boltzmann equations for Primordial Black 
-Holes + SM radiation + BSM Models. We consider the collapse of density fluctuations as the PBH 
+Holes + Inflaton + SM radiation + BSM Models. We consider the collapse of density fluctuations as the PBH 
 formation mechanism. We provide codes for monochromatic and extended mass and spin distributions.
 
 
