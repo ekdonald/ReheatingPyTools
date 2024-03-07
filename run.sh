@@ -7,7 +7,7 @@ mkdir -p $path          # directory for storing data for each yukawa coupling
 yphi="1E00"            # yukawa coupling of  Φ --> f f  (y_eff Φff)
 yukdir="yukawa=1E00"   
 
-logMBHin="2"  # log10 of initial black hole mass
+logMBHin="2"  # log10 of initial black hole mass  (in gramms, g)
 sigmaM="2"    # sigma = 0 for monochromatic BH "mono"
 Mdist="ext"   # mass distribution ("ext": enxtended power-law, "mono": monochromatic)
 beta="-10"    # Initial fraction of black hole energy density
