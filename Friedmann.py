@@ -275,7 +275,7 @@ class FBEqs_Sol:
         lpar = funcs_phik.phik_process().lparameter(k)
         Gklvar = funcs_phik.phik_funcs(process).Gkl(k, lambdac)
         rhoRadi = funcs_phik.phik_funcs(process).rhoRad(k, Amaxin)
-        rhoend = funcs_phik.phik_funcs(process).rhoendvar(lambdac, k)
+        rhoend = funcs_phik.phik_funcs(process).rhoendvar(k)
         rhophi_ini = funcs_phik.phik_funcs(process).rhophi(k, Amaxin, rhoend) 
 
         Ti_0    = (rhoRadi/(106.75*np.pi**2/30.0))**0.25   # Temperature of radiation at BH formation
