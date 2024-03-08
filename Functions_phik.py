@@ -26,7 +26,9 @@ import sys
 import warnings
 warnings.filterwarnings('ignore')
 warnings.warn("", FutureWarning)
-import BHProp as bh 
+import BHProp as bh #Schwarzschild and Kerr BHs library
+
+
 
 
 def readyuk():
@@ -42,10 +44,10 @@ class phik_process:
     Define all the functions needed to compute the parameters in phi^k inflation 
     '''
     def __init__(self):
-        self.process = "phiff"  
+        self.process = "phiff"      # process = "phiff", "phibb", "phiphibb"
         self.Mp_real = 1.22e19 
         self.Mp = 2.435e18 
-        self.geff = 100. 
+        self.geff = 100.  # 427./4.
         self.alpha_0 = 1 
         self.alpha_1 = np.sqrt(2/(3*self.alpha_0)) 
         self.AR_CMB = 2.19e-09 
@@ -115,7 +117,7 @@ class phik_funcs:
         lparm = phik_funcs(self.process).lparameter(k)
         gammaparam = phik_funcs(self.process).gammaphi(k,lambdac)
         factor = np.sqrt(3.0)*gammaparam*2*k/(k+8-6*k*lparm)
-        rhoend = phik_funcs(self.process).rhoendvar(lambdac, k)
+        rhoend = phik_funcs(self.process).rhoendvar(k)
         p1 = rhoend**(lparm+1/2)
         p2 = phik_process().Mp**(4*lparm-1)
         res = factor*p1/p2
@@ -144,10 +146,11 @@ class phik_funcs:
         return res;
 
 
-    def rhoendvar(self, lambdac, k):
+    def rhoendvar(self, k):
         '''
         Energy density at the end of inflation 
         '''              
+        lambdac = phik_funcs(self.process).lambdavar(k)
         res = 3*lambdac*(phik_process().Mp/phik_process().alpha_1)**4*(np.power(k/(k+np.sqrt(3*phik_process().alpha_0)),k))/2
         return res;
     
@@ -200,7 +203,7 @@ class phik_funcs:
     '''
     def m_pbh_in(self, k):
         lambdac = phik_funcs(self.process).lambdavar(k)
-        rhoend = phik_funcs(self.process).rhoendvar(lambdac, k)
+        rhoend = phik_funcs(self.process).rhoendvar(k)
         omega = (k-2)/(k+2)
         rhophi = rhoend*np.power(self.Amaxin,-6*k/(k+2))
         rhoradi = phik_funcs(self.process).rhoRad(k, self.Amaxin)
@@ -210,41 +213,70 @@ class phik_funcs:
         return res;
     '''
 
-    def m_pbh_solvein(self, k, Ain):
-        '''
-        pbh initial mass assuming universe filled with inflaton and radiation from decaying 
-        inflaton
-        '''           
-        lambdac = phik_funcs(self.process).lambdavar(k)
-        rhoend = phik_funcs(self.process).rhoendvar(lambdac, k)
-        omega = (k-2)/(k+2)
-        rhophi = rhoend*np.power(Ain,-6*k/(k+2))        
-        lparm = phik_funcs(self.process).lparameter(k)
-        lambdac = phik_funcs(self.process).lambdavar(k)
-        Gklvar  = phik_funcs(self.process).Gkl(k, lambdac)
-        rhoradi = Gklvar*np.power(Ain,-4.)*(np.power(Ain,-(6*k*lparm-k-8)/(k+2))-1)
-        eff = np.power(omega,3/2)
-        H = np.power(rhophi+rhoradi,1/2)/(np.sqrt(3)*phik_process().Mp)
-        res = 4*np.pi*eff*phik_process().Mp**2/H
-        return res;
 
-    
+    def m_pbh_solvein(self, k, Ain):
+        lambdac = phik_funcs(self.process).lambdavar(k)
+        rhoend = phik_funcs(self.process).rhoendvar(k)
+        omega = (k-2)/(k+2)
+        rhophi = rhoend*np.power(Ain,-6*k/(k+2))
+        
+        lparm = phik_funcs(self.process).lparameter(k)
+        Gklvar  = phik_funcs(self.process).Gkl(k, lambdac)
+        if (k < 7):
+            rhoradi = Gklvar*np.power(Ain,-4.)*np.power(Ain,-(6*k*lparm-k-8)/(k+2))
+        else:
+            rhoradi = Gklvar*np.power(Ain,-4.)*(-1.)            
+        
+        eff = np.power(omega,3/2)
+        H1 = np.power(rhophi,1/2)/(np.sqrt(3)*phik_process().Mp)
+        resphi = 4*np.pi*eff*phik_process().Mp**2/H1
+        
+        H2 = np.power(rhoradi,1/2)/(np.sqrt(3)*phik_process().Mp)
+        resrad = 4*np.pi*eff*phik_process().Mp**2/H2
+        
+        return resphi, resrad;
+
+     
     def Amax(self):  
-        '''
-        scale factor at BH formation 
-        solved for a given initial black hole mass.
-        assuning that a fraction of horizon collapse into pbh
-        '''           
         Ain = Symbol("Ain", positive=True)
         ksol = phik_process().kvar
-        res = solve(phik_funcs(self.process).m_pbh_solvein(ksol, Ain)*bh.GeV_in_g - 10**(phik_process().Min), Ain)
-        return res;
+        resphi = solve(phik_funcs(self.process).m_pbh_solvein(ksol, Ain)[0]*bh.GeV_in_g - 10**(phik_process().Min), Ain)
+        resrad = solve(phik_funcs(self.process).m_pbh_solvein(ksol, Ain)[1]*bh.GeV_in_g - 10**(phik_process().Min), Ain)
         
+        #print("resphi, resrad", resphi, resrad)
+
+        if (len(resphi) == 0):
+            print("No solution of Ain. Using default solution.")
+            Ainphi = 1.
+        else:
+            Ainphi = resphi[-1]
+            
+        #print("Ainphi = ", Ainphi)
+        radin = phik_funcs(phik_process().process).rhoRad(ksol, Ainphi)
+        rhoendv = phik_funcs(phik_process().process).rhoendvar(ksol)
+        phiin = phik_funcs(phik_process().process).rhophi(ksol, Ainphi, rhoendv) 
+        
+        if(radin < phiin):
+            res = Ainphi
+        else:
+            if (len(resrad) == 0):
+                print("No solution of Ain. Using default solution.")
+                res = Ainphi
+            else:
+                res = resrad[-1]
+
+        #print("Ainphi, Ainrad, Ain = ", Ainphi, resrad[-1], res)
+        radin = phik_funcs(phik_process().process).rhoRad(ksol, res)
+        rhoendv = phik_funcs(phik_process().process).rhoendvar(ksol)
+        phiin = phik_funcs(phik_process().process).rhophi(ksol, res, rhoendv)
+        #print("phiin, radin", phiin, radin)        
+        
+        return res;
+                
 
 class Amax_funcs:
     def __init__(self):
         '''
-        read scale factor Ain at formation
+        Energy density at the end of inflation 
         '''           
-        self.Amaxin = float(phik_funcs(phik_process().process).Amax()[-1])
-    
+        self.Amaxin = float(phik_funcs(phik_process().process).Amax())   
