@@ -1,6 +1,6 @@
-#------------------------------#
-ABOUT THE PACKAGE
-#------------------------------#
+
+# ABOUT THE PACKAGE
+
 
 FRISBHEE - FRIedmann Solver for Black Hole Evaporation in the Early-universe
 Authors: Andrew Cheek, Lucien Heurtier, Yuber F. Perez-Gonzalez, Jessica Turner
@@ -9,9 +9,7 @@ Python package providing the solution of the Friedmann - Boltzmann equations for
 Holes + SM radiation + BSM Models + inflaton field.
 
 
-#-------------------------------#
-FRISBHEE + Inflaton decay
-#-------------------------------#
+# FRISBHEE + Inflaton decay
 
 Modificatins to include inflaton in the evolution
 The main part is FRISBHEE has been modified to include the decay/scattering of inflaton in the dynamical
@@ -24,9 +22,7 @@ Holes + Inflaton + SM radiation + BSM Models. We consider the collapse of densit
 formation mechanism. We provide codes for monochromatic and extended mass and spin distributions.
 
 
-#-----------------#
-CONTAINS
-#-----------------#
+# CONTAINS
 
 	Friedmann.py: The main classes, return the full evolution of the PBH, SM and Dark Radiation 
                       comoving energy densities, together with the evolution of the PBH mass and spin as function of
@@ -50,9 +46,7 @@ CONTAINS
                        are defined.
 
 
-#------------------------#
-INSTALLATION AND RUNNING
-#------------------------#
+# INSTALLATION AND RUNNING
 
 	1. No specific installation instructions needed. just required modules (see below)
 	
@@ -61,19 +55,14 @@ INSTALLATION AND RUNNING
 	   ./Results/k=$kn/phiff/$yuk/$MBHin/databeta=$beta/sigma_$sigmaM/
 
 
-
-#-----------------#
-REQUIRED MODULES
-#-----------------#
+# REQUIRED MODULES
 
 We use Pathos (https://pathos.readthedocs.io/en/latest/pathos.html) for parallelisation, and 
 tqdm (https://pypi.org/project/tqdm/) for progress meter. These should be installed in order 
-to FRISBHEE-Inflaton to run.
+to ReheatingPyTools to run.
 
 
-#-----------------#
-CREDITS
-#-----------------#
+# CREDITS
 
 If using this code, please cite:
     arXiv:2107.00013, arXiv:2107.00016, arXiv:2207.09462, arXiv:2212.03878, arXiv:2305.10518, arXiv:2309.06505
